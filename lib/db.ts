@@ -55,4 +55,20 @@ export async function getAllTodos(db: SQLiteDatabase): Promise<TodoItem[]> {
     return result;
 }
 
+export async function addTodo(db: SQLiteDatabase, text: string): Promise<void> {
+    const newId = crypto.randomUUID();
+    const createdAt = new Date().toISOString();
+    await db.runAsync(
+        'INSERT INTO todos (id, text, done, createdAt) VALUES (?, ?, ?, ?)',
+        newId,
+        text,
+        0,
+        createdAt
+    );
+}
+
+export async function updateTodoStatus(db: SQLiteDatabase, id: string, done: boolean): Promise<void> {
+    const doneInt = done ? 1 : 0;
+    await db.runAsync('UPDATE todos SET done = ? WHERE id = ?', doneInt, id);
+}
 
